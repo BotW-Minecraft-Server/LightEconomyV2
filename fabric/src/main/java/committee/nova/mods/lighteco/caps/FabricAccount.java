@@ -31,15 +31,6 @@ public class FabricAccount extends DefaultAccount implements PlayerComponent<Fab
     }
 
     @Override
-    public BigDecimal getBalance(ICurrency currency) {
-        if (account.containsKey(currency.getCurrencyName())) {
-            return account.get(currency.getCurrencyName());
-        } else {
-            return new BigDecimal(0);
-        }
-    }
-
-    @Override
     public void setBalance(ICurrency currency, BigDecimal value) {
         account.put(currency.getCurrencyName(), value);
         ModCaps.ACCOUNT.sync(provider);
