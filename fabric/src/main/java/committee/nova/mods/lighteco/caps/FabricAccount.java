@@ -1,6 +1,7 @@
 package committee.nova.mods.lighteco.caps;
 
 import committee.nova.mods.lighteco.api.interfaces.IAccount;
+import committee.nova.mods.lighteco.api.interfaces.ICurrency;
 import committee.nova.mods.lighteco.impl.DefaultAccount;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.entity.PlayerComponent;
@@ -22,8 +23,27 @@ import java.math.BigDecimal;
  */
 public class FabricAccount extends DefaultAccount implements PlayerComponent<FabricAccount>, AutoSyncedComponent {
     private static final String TAG_ACCOUNT = "accounts";
+    private final Player provider;
 
-    public FabricAccount(Player player) {}
+
+    public FabricAccount(Player player) {
+        this.provider = player;
+    }
+
+    @Override
+    public BigDecimal getBalance(ICurrency currency) {
+        if (account.containsKey(currency.getCurrencyName())) {
+            return account.get(currency.getCurrencyName());
+        } else {
+            return new BigDecimal(0);
+        }
+    }
+
+    @Override
+    public void setBalance(ICurrency currency, BigDecimal value) {
+        account.put(currency.getCurrencyName(), value);
+        ModCaps.ACCOUNT.sync(provider);
+    }
 
     @Override
     public void readFromNbt(@NotNull CompoundTag tag) {
